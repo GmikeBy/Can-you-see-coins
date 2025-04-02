@@ -16,6 +16,7 @@
             bottom: 0;
             left: 50px;
             font-size: 30px;
+            transition: bottom 0.3s ease-in-out; /* Плавный переход для прыжка */
         }
 
         .coin {
@@ -25,6 +26,13 @@
 
         button {
             margin: 10px;
+        }
+
+        .btn-container {
+            position: absolute;
+            top: 420px;
+            width: 600px;
+            text-align: center;
         }
     </style>
 </head>
@@ -49,9 +57,12 @@
     </div>
 
     <h2>Управление:</h2>
-    <button onclick="moveLeft()">⬅ Влево</button>
-    <button onclick="moveRight()">Вправо ➡</button>
-    <button onclick="jump()">⬆ Прыжок</button>
+
+    <div class="btn-container">
+        <button onclick="moveLeft()">⬅ Влево</button>
+        <button onclick="moveRight()">Вправо ➡</button>
+        <button onclick="jump()">⬆ Прыжок</button>
+    </div>
 
     <p id="message"></p>
     <p>Время: <span id="timer">60</span> секунд</p>
