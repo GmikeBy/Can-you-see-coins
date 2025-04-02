@@ -2,6 +2,26 @@
 <html>
 <head>
     <title>Игра: Собери монеты</title>
+    <style>
+        #gameArea {
+            width: 600px;
+            height: 400px;
+            border: 1px solid black;
+            position: relative;
+            margin-top: 20px;
+        }
+
+        #player {
+            position: absolute;
+            bottom: 0;
+            left: 50px;
+            font-size: 30px;
+        }
+
+        button {
+            margin: 10px;
+        }
+    </style>
 </head>
 <body>
     <h1>Игра: Собери монеты</h1>
@@ -16,34 +36,48 @@
 
     <hr>
 
-    <pre>
-⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜
-        🟡
-
-        🟦
-
-⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜
-    </pre>
+    <div id="gameArea">
+        <p id="player">🟦</p>
+    </div>
 
     <h2>Управление:</h2>
     <button onclick="moveLeft()">⬅ Влево</button>
     <button onclick="moveRight()">Вправо ➡</button>
     <button onclick="jump()">⬆ Прыжок</button>
 
-    <p id="player">🟦</p>
-
     <script>
-        // Функции для управления
+        // Начальная позиция игрока
+        let player = document.getElementById("player");
+        let gameArea = document.getElementById("gameArea");
+        let playerPosition = 50;  // Начальная позиция игрока
+
+        // Функция для движения влево
         function moveLeft() {
-            alert("Игрок двигается влево!");
+            if (playerPosition > 0) {
+                playerPosition -= 20;  // Двигаться на 20px влево
+                player.style.left = playerPosition + "px";
+            }
         }
 
+        // Функция для движения вправо
         function moveRight() {
-            alert("Игрок двигается вправо!");
+            if (playerPosition < gameArea.offsetWidth - player.offsetWidth) {
+                playerPosition += 20;  // Двигаться на 20px вправо
+                player.style.left = playerPosition + "px";
+            }
         }
 
+        // Функция для прыжка
         function jump() {
-            alert("Игрок прыгает!");
+            let jumpHeight = 100;
+            let originalPosition = player.style.bottom;
+
+            player.style.bottom = jumpHeight + "px";  // Поднять игрока
+
+            // Через 0.5 секунды вернуться на место
+            setTimeout(function() {
+                player.style.bottom = originalPosition;
+            }, 500);
         }
     </script>
 </body>
