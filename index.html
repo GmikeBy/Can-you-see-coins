@@ -78,6 +78,11 @@
         let gameOver = false;     // Флаг для проверки окончания игры
         let level = 1;            // Уровень сложности
 
+        // Прыжки
+        let jumpHeight = 100;     // Высота одного прыжка
+        let isJumping = false;    // Флаг для проверки, прыгает ли игрок
+        let jumpSpeed = 20;       // Скорость падения
+
         // Функция для обновления таймера
         function updateTimer() {
             if (timer > 0 && !gameOver) {
@@ -113,19 +118,34 @@
             }
         }
 
-        // Функция для прыжка
+        // Функция для прыжков
         function jump() {
-            if (!gameOver) {
-                let jumpHeight = 100;
-                let originalPosition = player.style.bottom;
+            if (!gameOver && !isJumping) {
+                isJumping = true;
+                let maxJumpHeight = playerBottom + jumpHeight;
+                let currentHeight = playerBottom;
 
-                player.style.bottom = jumpHeight + "px";  // Поднять игрока
+                // Поднимем игрока до максимальной высоты
+                let jumpInterval = setInterval(function() {
+                    if (currentHeight < maxJumpHeight) {
+                        currentHeight += jumpSpeed;
+                        player.style.bottom = currentHeight + "px";
+                    } else {
+                        clearInterval(jumpInterval); // Прекратить подъем
 
-                // Через 0.5 секунды вернуться на место
-                setTimeout(function() {
-                    player.style.bottom = originalPosition;
-                    checkCoinCollection();
-                }, 500);
+                        // После достижения максимальной высоты игрок начнет падать
+                        let fallInterval = setInterval(function() {
+                            if (currentHeight > 0) {
+                                currentHeight -= jumpSpeed;
+                                player.style.bottom = currentHeight + "px";
+                            } else {
+                                clearInterval(fallInterval); // Прекратить падение
+                                isJumping = false; // Игрок больше не прыгает
+                                checkCoinCollection(); // Проверим, собрал ли игрок монеты
+                            }
+                        }, 30);
+                    }
+                }, 30);
             }
         }
 
