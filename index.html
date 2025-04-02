@@ -78,10 +78,10 @@
         let gameOver = false;     // Флаг для проверки окончания игры
         let level = 1;            // Уровень сложности
 
-        // Прыжки
-        let jumpHeight = 100;     // Высота одного прыжка
-        let isJumping = false;    // Флаг для проверки, прыгает ли игрок
-        let jumpSpeed = 20;       // Скорость падения
+        // Параметры прыжков
+        let jumpHeight = 50;     // Высота одного уровня прыжка
+        let isJumping = false;   // Флаг для проверки, прыгает ли игрок
+        let jumpMultiplier = 0;  // Количество уровней прыжка (по умолчанию 0)
 
         // Функция для обновления таймера
         function updateTimer() {
@@ -122,21 +122,24 @@
         function jump() {
             if (!gameOver && !isJumping) {
                 isJumping = true;
-                let maxJumpHeight = playerBottom + jumpHeight;
+
+                // Получаем высоту прыжка в зависимости от количества нажатий
+                let totalJumpHeight = jumpHeight * (jumpMultiplier + 1);
+                let maxJumpHeight = playerBottom + totalJumpHeight;
                 let currentHeight = playerBottom;
 
                 // Поднимем игрока до максимальной высоты
                 let jumpInterval = setInterval(function() {
                     if (currentHeight < maxJumpHeight) {
-                        currentHeight += jumpSpeed;
+                        currentHeight += 10; // Прибавляем по 10 пикселей на каждом шаге
                         player.style.bottom = currentHeight + "px";
                     } else {
                         clearInterval(jumpInterval); // Прекратить подъем
 
                         // После достижения максимальной высоты игрок начнет падать
                         let fallInterval = setInterval(function() {
-                            if (currentHeight > 0) {
-                                currentHeight -= jumpSpeed;
+                            if (currentHeight > playerBottom) {
+                                currentHeight -= 10; // Плавное падение
                                 player.style.bottom = currentHeight + "px";
                             } else {
                                 clearInterval(fallInterval); // Прекратить падение
@@ -146,6 +149,14 @@
                         }, 30);
                     }
                 }, 30);
+            }
+        }
+
+        // Функция для увеличения высоты прыжка при каждом нажатии
+        function increaseJumpHeight() {
+            if (!isJumping) {
+                jumpMultiplier++; // Увеличиваем высоту прыжка
+                jump();
             }
         }
 
@@ -211,6 +222,9 @@
 
         // Обновляем монеты в начале игры
         updateCoins();
+
+        // Повторяем прыжок при каждом нажатии
+        document.querySelector("button:nth-child(3)").addEventListener("click", increaseJumpHeight);
     </script>
 </body>
 </html>
