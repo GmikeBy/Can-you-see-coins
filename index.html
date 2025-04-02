@@ -65,6 +65,7 @@
         let score = 0;            // Счет за собранные монеты
         let timer = 60;           // Таймер на 60 секунд
         let gameOver = false;     // Флаг для проверки окончания игры
+        let level = 1;            // Уровень сложности
 
         // Функция для обновления таймера
         function updateTimer() {
@@ -135,10 +136,40 @@
 
                     // Проверяем, выиграл ли игрок
                     if (score === 3) {
-                        endGame("Поздравляем, ты выиграл!");
+                        nextLevel();
                     }
                 }
             });
+        }
+
+        // Функция для перехода на следующий уровень
+        function nextLevel() {
+            level++; // Увеличиваем уровень
+            score = 0; // Сбрасываем счет
+            document.getElementById("message").textContent = "Поздравляем! Ты перешел на уровень " + level;
+            timer = 60 - level * 5; // Уменьшаем время с каждым уровнем
+            if (timer < 10) timer = 10; // Минимум 10 секунд
+            updateCoins();
+        }
+
+        // Функция для обновления монет на каждом уровне
+        function updateCoins() {
+            let coins = document.querySelectorAll('.coin');
+            coins.forEach(function(coin) {
+                coin.style.display = 'block';  // Делаем монеты видимыми
+                coin.style.left = Math.random() * (gameArea.offsetWidth - 30) + "px"; // Случайная позиция по оси X
+                coin.style.bottom = Math.random() * (gameArea.offsetHeight - 30) + "px"; // Случайная позиция по оси Y
+            });
+
+            // Создаем новые монеты, если уровень выше 1
+            if (level > 1) {
+                let newCoin = document.createElement('p');
+                newCoin.className = 'coin';
+                newCoin.style.left = Math.random() * (gameArea.offsetWidth - 30) + "px";
+                newCoin.style.bottom = Math.random() * (gameArea.offsetHeight - 30) + "px";
+                newCoin.textContent = '🟡';
+                gameArea.appendChild(newCoin);
+            }
         }
 
         // Функция для завершения игры
@@ -146,6 +177,9 @@
             gameOver = true;
             document.getElementById("message").textContent = message;
         }
+
+        // Обновляем монеты в начале игры
+        updateCoins();
     </script>
 </body>
 </html>
