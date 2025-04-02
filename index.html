@@ -18,6 +18,11 @@
             font-size: 30px;
         }
 
+        .coin {
+            position: absolute;
+            font-size: 30px;
+        }
+
         button {
             margin: 10px;
         }
@@ -38,6 +43,9 @@
 
     <div id="gameArea">
         <p id="player">🟦</p>
+        <p class="coin" id="coin1" style="left: 150px; bottom: 50px;">🟡</p>
+        <p class="coin" id="coin2" style="left: 300px; bottom: 150px;">🟡</p>
+        <p class="coin" id="coin3" style="left: 450px; bottom: 250px;">🟡</p>
     </div>
 
     <h2>Управление:</h2>
@@ -45,17 +53,22 @@
     <button onclick="moveRight()">Вправо ➡</button>
     <button onclick="jump()">⬆ Прыжок</button>
 
+    <p id="message"></p>
+
     <script>
         // Начальная позиция игрока
         let player = document.getElementById("player");
         let gameArea = document.getElementById("gameArea");
         let playerPosition = 50;  // Начальная позиция игрока
+        let playerBottom = 0;     // Начальная позиция игрока по высоте
+        let score = 0;            // Счет за собранные монеты
 
         // Функция для движения влево
         function moveLeft() {
             if (playerPosition > 0) {
                 playerPosition -= 20;  // Двигаться на 20px влево
                 player.style.left = playerPosition + "px";
+                checkCoinCollection();
             }
         }
 
@@ -64,6 +77,7 @@
             if (playerPosition < gameArea.offsetWidth - player.offsetWidth) {
                 playerPosition += 20;  // Двигаться на 20px вправо
                 player.style.left = playerPosition + "px";
+                checkCoinCollection();
             }
         }
 
@@ -77,7 +91,27 @@
             // Через 0.5 секунды вернуться на место
             setTimeout(function() {
                 player.style.bottom = originalPosition;
+                checkCoinCollection();
             }, 500);
+        }
+
+        // Проверка, собрал ли игрок монету
+        function checkCoinCollection() {
+            let coins = document.querySelectorAll('.coin');
+            coins.forEach(function(coin) {
+                let coinRect = coin.getBoundingClientRect();
+                let playerRect = player.getBoundingClientRect();
+
+                // Проверяем, столкнулся ли игрок с монетой
+                if (playerRect.left < coinRect.right &&
+                    playerRect.right > coinRect.left &&
+                    playerRect.top < coinRect.bottom &&
+                    playerRect.bottom > coinRect.top) {
+                    coin.style.display = 'none'; // Прячем монету
+                    score++; // Увеличиваем счет
+                    document.getElementById("message").textContent = "Собрано монет: " + score;
+                }
+            });
         }
     </script>
 </body>
