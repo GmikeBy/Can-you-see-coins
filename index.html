@@ -16,7 +16,7 @@
             bottom: 0;
             left: 50px;
             font-size: 30px;
-            transition: bottom 0.3s ease-in-out; /* Плавный переход для прыжка */
+            transition: bottom 0.3s ease-in-out;
         }
 
         .coin {
@@ -34,6 +34,13 @@
             width: 600px;
             text-align: center;
         }
+
+        .level {
+            position: absolute;
+            width: 100%;
+            height: 5px;
+            background-color: black;
+        }
     </style>
 </head>
 <body>
@@ -41,19 +48,19 @@
 
     <p>Используй воображение, чтобы двигаться по карте и собирать монеты!</p>
 
-    <div>
-        <p>🟦 - Игрок</p>
-        <p>🟡 - Монета</p>
-        <p>⬜ - Платформа</p>
-    </div>
-
     <hr>
 
     <div id="gameArea">
+        <!-- Игровое поле с уровнями -->
+        <div class="level" style="top: 80px;"></div>
+        <div class="level" style="top: 160px;"></div>
+        <div class="level" style="top: 240px;"></div>
+        <div class="level" style="top: 320px;"></div>
+
         <p id="player">🟦</p>
-        <p class="coin" id="coin1" style="left: 150px; bottom: 50px;">🟡</p>
-        <p class="coin" id="coin2" style="left: 300px; bottom: 150px;">🟡</p>
-        <p class="coin" id="coin3" style="left: 450px; bottom: 250px;">🟡</p>
+        <p class="coin" id="coin1" style="left: 150px; bottom: 80px;">🟡</p>
+        <p class="coin" id="coin2" style="left: 300px; bottom: 160px;">🟡</p>
+        <p class="coin" id="coin3" style="left: 450px; bottom: 240px;">🟡</p>
     </div>
 
     <h2>Управление:</h2>
@@ -156,6 +163,7 @@
         function increaseJumpHeight() {
             if (!isJumping) {
                 jumpMultiplier++; // Увеличиваем высоту прыжка
+                if (jumpMultiplier > 2) jumpMultiplier = 2; // Ограничиваем прыжок до третьего уровня
                 jump();
             }
         }
