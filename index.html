@@ -54,6 +54,7 @@
     <button onclick="jump()">⬆ Прыжок</button>
 
     <p id="message"></p>
+    <p>Время: <span id="timer">60</span> секунд</p>
 
     <script>
         // Начальная позиция игрока
@@ -62,37 +63,58 @@
         let playerPosition = 50;  // Начальная позиция игрока
         let playerBottom = 0;     // Начальная позиция игрока по высоте
         let score = 0;            // Счет за собранные монеты
+        let timer = 60;           // Таймер на 60 секунд
+        let gameOver = false;     // Флаг для проверки окончания игры
+
+        // Функция для обновления таймера
+        function updateTimer() {
+            if (timer > 0 && !gameOver) {
+                timer--;
+                document.getElementById("timer").textContent = timer;
+            } else if (timer === 0 && !gameOver) {
+                endGame("Время вышло! Ты проиграл.");
+            }
+        }
+
+        // Запуск таймера каждую секунду
+        setInterval(updateTimer, 1000);
 
         // Функция для движения влево
         function moveLeft() {
-            if (playerPosition > 0) {
-                playerPosition -= 20;  // Двигаться на 20px влево
-                player.style.left = playerPosition + "px";
-                checkCoinCollection();
+            if (!gameOver) {
+                if (playerPosition > 0) {
+                    playerPosition -= 20;  // Двигаться на 20px влево
+                    player.style.left = playerPosition + "px";
+                    checkCoinCollection();
+                }
             }
         }
 
         // Функция для движения вправо
         function moveRight() {
-            if (playerPosition < gameArea.offsetWidth - player.offsetWidth) {
-                playerPosition += 20;  // Двигаться на 20px вправо
-                player.style.left = playerPosition + "px";
-                checkCoinCollection();
+            if (!gameOver) {
+                if (playerPosition < gameArea.offsetWidth - player.offsetWidth) {
+                    playerPosition += 20;  // Двигаться на 20px вправо
+                    player.style.left = playerPosition + "px";
+                    checkCoinCollection();
+                }
             }
         }
 
         // Функция для прыжка
         function jump() {
-            let jumpHeight = 100;
-            let originalPosition = player.style.bottom;
+            if (!gameOver) {
+                let jumpHeight = 100;
+                let originalPosition = player.style.bottom;
 
-            player.style.bottom = jumpHeight + "px";  // Поднять игрока
+                player.style.bottom = jumpHeight + "px";  // Поднять игрока
 
-            // Через 0.5 секунды вернуться на место
-            setTimeout(function() {
-                player.style.bottom = originalPosition;
-                checkCoinCollection();
-            }, 500);
+                // Через 0.5 секунды вернуться на место
+                setTimeout(function() {
+                    player.style.bottom = originalPosition;
+                    checkCoinCollection();
+                }, 500);
+            }
         }
 
         // Проверка, собрал ли игрок монету
@@ -110,8 +132,19 @@
                     coin.style.display = 'none'; // Прячем монету
                     score++; // Увеличиваем счет
                     document.getElementById("message").textContent = "Собрано монет: " + score;
+
+                    // Проверяем, выиграл ли игрок
+                    if (score === 3) {
+                        endGame("Поздравляем, ты выиграл!");
+                    }
                 }
             });
+        }
+
+        // Функция для завершения игры
+        function endGame(message) {
+            gameOver = true;
+            document.getElementById("message").textContent = message;
         }
     </script>
 </body>
